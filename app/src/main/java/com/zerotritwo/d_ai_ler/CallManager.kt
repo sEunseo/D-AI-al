@@ -6,6 +6,8 @@ import io.reactivex.subjects.BehaviorSubject
 
 object CallManager {
 
+    //ADD
+
     private val subject = BehaviorSubject.create<GsmCall>()
 
     fun updates(): Observable<GsmCall> = subject

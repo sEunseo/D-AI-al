@@ -6,6 +6,8 @@ import io.reactivex.subjects.BehaviorSubject
 
 object CallManager2 {
 
+    //ADD
+
     private val subject = BehaviorSubject.create<GsmCall>()
 
     private var currentCall: Call? = null
