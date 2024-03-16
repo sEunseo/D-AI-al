@@ -1,4 +1,5 @@
 package com.zerotritwo.d_ai_ler
+<<<<<<< HEAD
 import android.telecom.Call
 import android.telecom.InCallService
 //ADD
@@ -23,3 +24,9 @@ class CallService : InCallService() {
         }
     }
 }
+=======
+import android.telecom.InCallService
+//ADD
+
+class CallService : InCallService()
+>>>>>>> 25d04f2bece22402239238a9e4842dcd5dfe0cf4
