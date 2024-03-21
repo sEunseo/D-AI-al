@@ -5,49 +5,43 @@ import android.os.Build
 import android.os.Bundle
 import android.telecom.TelecomManager
 import android.widget.Toast
-import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import com.zerotritwo.d_ai_ler.ui.theme.DailerTheme
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private const val REQUEST_CODE_SET_DEFAULT_DIALER = 123
+    // registerForActivityResult를 사용하여 결과 처리를 위한 콜백 등록
+    private val defaultDialerResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        checkSetDefaultDialerResult(result.resultCode)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("not problem")
         setContentView(R.layout.activity_main)
         checkDefaultDialer()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_CODE_SET_DEFAULT_DIALER -> checkSetDefaultDialerResult(resultCode)
-    }
-}
-
-private fun checkDefaultDialer() {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
-
-    val telecomManager = getSystemService(TELECOM_SERVICE) as TelecomManager
+    private fun checkDefaultDialer() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+        println("Enter Function of permission")
+        val telecomManager = getSystemService(TELECOM_SERVICE) as TelecomManager
         val isAlreadyDefaultDialer = packageName == telecomManager.defaultDialerPackage
         if (isAlreadyDefaultDialer) return
-
         val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
             .putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, packageName)
-        startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER)
+        println("Permission Checked")
+        // startActivityForResult 대신 registerForActivityResult를 사용한 콜백 실행
+        defaultDialerResultLauncher.launch(intent)
     }
 
     private fun checkSetDefaultDialerResult(resultCode: Int) {
         val message = when (resultCode) {
-            RESULT_OK       -> "User accepted request to become default dialer"
-            RESULT_CANCELED -> "User declined request to become default dialer"
-            else            -> "Unexpected result code $resultCode"
+            RESULT_OK -> "전화 앱 기본 설정 성공!"
+            RESULT_CANCELED -> "전화 기본 앱 설정이 거부되었습니다."
+            else -> "오류가 발생했습니다. | 오류 코드: $resultCode"
         }
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
