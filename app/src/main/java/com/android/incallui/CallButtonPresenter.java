@@ -17,17 +17,14 @@
 package com.android.incallui;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Trace;
 import android.telecom.CallAudioState;
 import android.telecom.PhoneAccountHandle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.os.UserManagerCompat;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 
 import com.android.contacts.common.compat.CallCompat;
 import com.android.incallui.InCallCameraManager.Listener;
@@ -49,8 +46,6 @@ import com.android.incallui.incall.protocol.InCallButtonUi;
 import com.android.incallui.incall.protocol.InCallButtonUiDelegate;
 import com.android.incallui.multisim.SwapSimWorker;
 import com.android.incallui.videotech.utils.VideoUtils;
-import com.fissy.dialer.R;
-import com.fissy.dialer.callrecord.impl.CallRecorderService;
 import com.fissy.dialer.common.Assert;
 import com.fissy.dialer.common.LogUtil;
 import com.fissy.dialer.common.concurrent.DialerExecutorComponent;
@@ -345,23 +340,7 @@ public class CallButtonPresenter
     public void callRecordClicked(boolean checked) {
         CallRecorder recorder = CallRecorder.getInstance();
         if (checked) {
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean warningPresented = prefs.getBoolean(KEY_RECORDING_WARNING_PRESENTED, false);
-            if (!warningPresented) {
-                new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
-                        .setTitle(R.string.recording_warning_title)
-                        .setMessage(R.string.recording_warning_text)
-                        .setPositiveButton(R.string.onscreenCallRecordText, (dialog, which) -> {
-                            prefs.edit()
-                                    .putBoolean(KEY_RECORDING_WARNING_PRESENTED, true)
-                                    .apply();
-                            startCallRecordingOrAskForPermission();
-                        })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .show();
-            } else {
-                startCallRecordingOrAskForPermission();
-            }
+            startCallRecordingOrAskForPermission();
         } else {
             if (recorder.isRecording()) {
                 recorder.finishRecording();

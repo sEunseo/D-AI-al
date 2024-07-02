@@ -76,7 +76,7 @@ public class CountryDetector {
     private static final long DISTANCE_BETWEEN_UPDATES_METERS = 5000;
     // Used as a default country code when all the sources of country data have failed in the
     // exceedingly rare event that the device does not have a default locale set for some reason.
-    private static final String DEFAULT_COUNTRY_ISO = "US";
+    private static final String DEFAULT_COUNTRY_ISO = "KO";
 
     @VisibleForTesting
     public static CountryDetector instance;
